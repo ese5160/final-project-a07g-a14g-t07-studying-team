@@ -36,7 +36,7 @@
  #pragma mark - Private Functions -
 
  static void advance_pointer(cbuf_handle_t cbuf)
- {
+ { 
 	 //assert(cbuf);
 
 	 if(cbuf->full)
@@ -147,19 +147,19 @@
 
  int circular_buf_get(cbuf_handle_t cbuf, uint8_t * data)
  {
-	 //assert(cbuf && data && cbuf->buffer);
-	 
-	 int r = -1;
+	//assert(cbuf && data && cbuf->buffer);
+	
+	int r = -1;
 
-	 if(!circular_buf_empty(cbuf))
-	 {
-		 *data = cbuf->buffer[cbuf->tail];
-		 retreat_pointer(cbuf);
+	if(!circular_buf_empty(cbuf))
+	{
+		*data = cbuf->buffer[cbuf->tail];
+		retreat_pointer(cbuf);
 
-		 r = 0;
-	 }
+		r = 0;
+	}
 
-	 return r;
+	return r;
  }
 
  bool circular_buf_empty(cbuf_handle_t cbuf)

@@ -67,18 +67,18 @@ int main(void)
 
 	system_interrupt_enable_global();
 
-	 SerialConsoleWriteString("ESE5160 - CLI and Debug Logger\r\n"); // Order to add string to TX Buffer
+	SerialConsoleWriteString("ESE5160 - CLI and Debug Logger\r\n"); // Order to add string to TX Buffer
 
-	 char string[] = "CLI starter code - ESE516\r\n";
+	char string[] = "CLI starter code - ESE516\r\n";
 
-	 /*Simple DebugLogger Test*/
-	 setLogLevel(LOG_INFO_LVL);
-	 LogMessage(LOG_INFO_LVL, "%s", string);									  // Test
-	 setLogLevel(LOG_ERROR_LVL);												  // Sets the Debug Logger to only allow messages with LOG_ERROR_LVL or higher to be printed
-	 LogMessage(LOG_INFO_LVL, "Performing Temperature Test...\r\n");			  // This should NOT print
-	 LogMessage(LOG_FATAL_LVL, "Error! Temperature over %d Degrees!\r\n", 55); // This should print
+	/*Simple DebugLogger Test*/
+	setLogLevel(LOG_INFO_LVL);
+	LogMessage(LOG_INFO_LVL, "%s", string);									  // Test
+	setLogLevel(LOG_ERROR_LVL);												  // Sets the Debug Logger to only allow messages with LOG_ERROR_LVL or higher to be printed
+	LogMessage(LOG_INFO_LVL, "Performing Temperature Test...\r\n");			  // This should NOT print
+	LogMessage(LOG_FATAL_LVL, "Error! Temperature over %d Degrees!\r\n", 55); // This should print
 
-	 LogMessage(LOG_INFO_LVL, "ESE5160 CLI STARTER PROJECT STARTED\r\n");
+	LogMessage(LOG_INFO_LVL, "ESE5160 CLI STARTER PROJECT STARTED\r\n");
 
 	// Start FreeRTOS scheduler.
 	vTaskStartScheduler();
