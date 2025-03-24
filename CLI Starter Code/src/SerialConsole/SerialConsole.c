@@ -44,6 +44,7 @@ char latestRx; ///< Holds the latest character received
 char latestTx; ///< Holds the latest character to be transmitted
 
 SemaphoreHandle_t xReadSemaphore; ///< Checks if read is available
+SemaphoreHandle_t xReadOutSemaphore;
 
 /******************************************************************************
  * Callback Declarations
@@ -64,6 +65,7 @@ struct usart_module usart_instance;
 char rxCharacterBuffer[RX_BUFFER_SIZE]; 			   ///< Buffer to store received characters
 char txCharacterBuffer[TX_BUFFER_SIZE]; 			   ///< Buffer to store characters to be sent
 enum eDebugLogLevels currentDebugLevel = LOG_INFO_LVL; ///< Default debug level
+BaseType_t xHigherPriorityTaskWoken;
 
 /******************************************************************************
  * Global Functions
@@ -88,6 +90,7 @@ void InitializeSerialConsole(void)
 	// Add any other calls you need to do to initialize your Serial Console
 	// Create binary read semaphore
 	xReadSemaphore = xSemaphoreCreateCounting(RX_BUFFER_SIZE, 0);
+	xReadOutSemaphore = xSemaphoreCreateBinary();
 }
 
 /**
@@ -236,14 +239,21 @@ static void configure_usart_callbacks(void)
  *****************************************************************************/
 void usart_read_callback(struct usart_module *const usart_module)
 {
-	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+	// circular_buf_put(cbufRx, (uint8_t)latestRx);
+	// usart_read_buffer_job(&usart_instance, (uint8_t *)&latestRx, 1);
+	// BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+	// xSemaphoreGiveFromISR(xReadSemaphore, &xHigherPriorityTaskWoken);
+	// // xSemaphoreTakeFromISR(xReadOutSemaphore, portMAX_DELAY);
+	// portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 	// ToDo: Complete this function 
 	if (circular_buf_put2(cbufRx, (uint8_t)latestRx) != -1)
 	{
-		xSemaphoreGiveFromISR(xReadSemaphore, &xHigherPriorityTaskWoken);
 		usart_read_buffer_job(&usart_instance, (uint8_t *)&latestRx, 1);
+		xHigherPriorityTaskWoken = pdFALSE;
+		xSemaphoreGiveFromISR(xReadSemaphore, &xHigherPriorityTaskWoken);
+		// xSemaphoreTakeFromISR(xReadOutSemaphore, portMAX_DELAY);
+		portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 	}
-    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
 /**************************************************************************/ 

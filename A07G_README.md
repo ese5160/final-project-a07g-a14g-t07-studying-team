@@ -41,6 +41,7 @@
 
 1. Should be attached to SERCOM4. 
 2. Should attach to PB10 and PB11. 
+3. 
 
 ## 5 Complete the CLI
 

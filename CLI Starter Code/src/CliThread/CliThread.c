@@ -11,6 +11,7 @@
  ******************************************************************************/
 #include "CliThread.h"
 #include "SerialConsole.h"
+#include "semphr.h"
 
 /******************************************************************************
  * Defines
@@ -25,6 +26,7 @@ static int8_t *const pcWelcomeMessage =
     "FreeRTOS CLI.\r\nType Help to view a list of registered commands.\r\n";
 
 extern SemaphoreHandle_t xReadSemaphore;
+extern SemaphoreHandle_t xReadOutSemaphore;
 
 // Clear screen command
 const CLI_Command_Definition_t xClearScreen =
@@ -240,6 +242,7 @@ static void FreeRTOS_read(char *character)
     if (xSemaphoreTake(xReadSemaphore, portMAX_DELAY) == pdTRUE)    // If we get the semaphore, read the buffer to get a character. 
     {
         SerialConsoleReadCharacter((uint8_t *) character);
+        // xSemaphoreGive(xReadOutSemaphore);
     }
 }
 
