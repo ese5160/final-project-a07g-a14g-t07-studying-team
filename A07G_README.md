@@ -94,11 +94,12 @@
    4. The callback function checks if the buffer `cbufRx` is full or not. 
    5. If `cbufRx` is not full, the data stored in the register `latestRx` are put into `cbufRx`, and restart the read job. 
    
-8. 1. A string is added to the buffer `cbufTx`. TODO
-   1. An interrupt is called, triggering the callback function `usart_write_callback()`. 
-   2. The callback function checks if any data could be read from `cbufTx`. 
-   3. If there are data in `cbufTx`, put the data in the register `latestTx`, and then restart the write job for potential future characters. 
-   4. The data in `latestTx` is transmitted through USART. 
+8.
+   1. A string is added to the buffer `cbufTx`. TODO
+   2. An interrupt is called, triggering the callback function `usart_write_callback()`. 
+   3. The callback function checks if any data could be read from `cbufTx`. 
+   4. If there are data in `cbufTx`, put the data in the register `latestTx`, and then restart the write job for potential future characters. 
+   5. The data in `latestTx` is transmitted through USART. 
    
 9.  It starts the thread named "CLI_TASK", and checks how many heap is free before and after the creation of this thread. Only 1 new thread is started. 
 
