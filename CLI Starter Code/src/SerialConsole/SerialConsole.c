@@ -148,11 +148,24 @@ void setLogLevel(enum eDebugLogLevels debugLevel)
 
 /**
  * @brief Logs a message at the specified debug level.
+ * @param   	level  Determines the log levels of the message to output. If the level is smaller than 
+ * 					   the current “logLevel” it is not printed.
+ * @param   	format Pointer to a array of characters to be printed.
+ * @param   	...    A list of arguments to be printed. 
  */
 void LogMessage(enum eDebugLogLevels level, const char *format, ...)
 {
-    // Todo: Implement Debug Logger
-	// More detailed descriptions are in header file
+	/// If level is lower than set, disregard the message. 
+	if (level < getLogLevel())
+		return;
+	va_list args;
+	va_start(args, format);
+	char buffer[TX_BUFFER_SIZE];
+	/// Dump arguments and format into buffer
+	vsprintf(buffer, format, args);
+	va_end(args);
+	/// Send buffer to USART write. 
+	SerialConsoleWriteString(buffer);
 }
 
 /*

@@ -35,7 +35,12 @@
 
 ## 3 Debug Logger Module
 
+![image](images/A07G-P3.png)
+
 ## 4 Wiretap the convo
+
+1. Should be attached to SERCOM4. 
+2. Should attach to PB10 and PB11. 
 
 ## 5 Complete the CLI
 

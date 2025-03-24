@@ -78,7 +78,8 @@ void vCommandConsoleTask(void *pvParameters)
         /* This implementation reads a single character at a time.  Wait in the
         Blocked state until a character is received. */
 
-        FreeRTOS_read(&cRxedChar);
+        FreeRTOS_read(&
+);
 
         if (cRxedChar[0] == '\n' || cRxedChar[0] == '\r')
         {
