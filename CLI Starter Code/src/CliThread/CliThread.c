@@ -39,6 +39,22 @@ static const CLI_Command_Definition_t xResetCommand =
         (const pdCOMMAND_LINE_CALLBACK)CLI_ResetDevice,
         0};
 
+static const CLI_Command_Definition_t xVersion = 
+{
+    "version", 
+    "version: Print out the current version of the software\r\n", 
+    (const pdCOMMAND_LINE_CALLBACK)CLI_PrintVersion,
+    0
+};
+
+static const CLI_Command_Definition_t xTick = 
+{
+    "tick", 
+    "tick: Print out the current tick of the software\r\n", 
+    (const pdCOMMAND_LINE_CALLBACK)CLI_PrintTicks, 
+    0
+};
+
 /******************************************************************************
  * Forward Declarations
  ******************************************************************************/
@@ -57,6 +73,8 @@ void vCommandConsoleTask(void *pvParameters)
 
     FreeRTOS_CLIRegisterCommand(&xClearScreen);
     FreeRTOS_CLIRegisterCommand(&xResetCommand);
+    FreeRTOS_CLIRegisterCommand(&xVersion);
+    FreeRTOS_CLIRegisterCommand(&xTick);
 
     uint8_t cRxedChar[2], cInputIndex = 0;
     BaseType_t xMoreDataToFollow;
@@ -211,15 +229,13 @@ void vCommandConsoleTask(void *pvParameters)
 
 /**************************************************************************/ /**
  * @fn			void FreeRTOS_read(char* character)
- * @brief		STUDENTS TO COMPLETE. This function block the thread unless we received a character. How can we do this?
-                 There are multiple solutions! Check all the inter-thread communications available! See https://www.freertos.org/a00113.html
- * @details		STUDENTS TO COMPLETE.
+ * @brief		A function to read a character when there are characters in the buffer. 
+ * @details		This function will wait for the counting semaphore to release and read # number of characters that matches the number of counting semaphore. 
  * @note
  *****************************************************************************/
 static void FreeRTOS_read(char *character)
 {
-    // ToDo: Complete this function
-    if (xSemaphoreTake(xReadSemaphore, portMAX_DELAY) == pdTRUE)
+    if (xSemaphoreTake(xReadSemaphore, portMAX_DELAY) == pdTRUE)    // If we get the semaphore, read the buffer to get a character. 
     {
         while (SerialConsoleReadCharacter((uint8_t *) character) == -1)
         {
@@ -248,5 +264,20 @@ BaseType_t xCliClearTerminalScreen(char *pcWriteBuffer, size_t xWriteBufferLen, 
 BaseType_t CLI_ResetDevice(int8_t *pcWriteBuffer, size_t xWriteBufferLen, const int8_t *pcCommandString)
 {
     system_reset();
+    return pdFALSE;
+}
+
+// Print the version of the software. 
+BaseType_t CLI_PrintVersion(int8_t *pcWriteBuffer, size_t xWriteBufferLen, const int8_t *pcCommandString)
+{
+    snprintf(pcWriteBuffer, xWriteBufferLen, "0.0.1");
+    return pdFALSE;
+}
+
+// Print the tick of the software. 
+BaseType_t CLI_PrintTicks(int8_t *pcWriteBuffer, size_t xWriteBufferLen, const int8_t *pcCommandString)
+{
+    sprintf(bufCli, "%d\r\n", xTaskGetTickCount());
+    snprintf(pcWriteBuffer, xWriteBufferLen, bufCli);
     return pdFALSE;
 }
