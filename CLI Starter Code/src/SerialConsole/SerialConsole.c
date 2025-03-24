@@ -44,7 +44,6 @@ char latestRx; ///< Holds the latest character received
 char latestTx; ///< Holds the latest character to be transmitted
 
 SemaphoreHandle_t xReadSemaphore; ///< Checks if read is available
-SemaphoreHandle_t xReadOutSemaphore;
 
 /******************************************************************************
  * Callback Declarations
@@ -90,7 +89,6 @@ void InitializeSerialConsole(void)
 	// Add any other calls you need to do to initialize your Serial Console
 	// Create binary read semaphore
 	xReadSemaphore = xSemaphoreCreateCounting(RX_BUFFER_SIZE, 0);
-	xReadOutSemaphore = xSemaphoreCreateBinary();
 }
 
 /**

@@ -242,7 +242,6 @@ static void FreeRTOS_read(char *character)
     if (xSemaphoreTake(xReadSemaphore, portMAX_DELAY) == pdTRUE)    // If we get the semaphore, read the buffer to get a character. 
     {
         SerialConsoleReadCharacter((uint8_t *) character);
-        // xSemaphoreGive(xReadOutSemaphore);
     }
 }
 
