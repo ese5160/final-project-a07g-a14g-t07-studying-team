@@ -11,10 +11,13 @@
  ******************************************************************************/
 #include "CliThread.h"
 #include "SerialConsole.h"
+#include "semphr.h"
 
 /******************************************************************************
  * Defines
  ******************************************************************************/
+
+#define SOFTWARE_VERSION "0.0.1"
 
 /******************************************************************************
  * Variables
@@ -23,6 +26,7 @@ static int8_t *const pcWelcomeMessage =
     "FreeRTOS CLI.\r\nType Help to view a list of registered commands.\r\n";
 
 extern SemaphoreHandle_t xReadSemaphore;
+extern SemaphoreHandle_t xReadOutSemaphore;
 
 // Clear screen command
 const CLI_Command_Definition_t xClearScreen =
@@ -237,10 +241,8 @@ static void FreeRTOS_read(char *character)
 {
     if (xSemaphoreTake(xReadSemaphore, portMAX_DELAY) == pdTRUE)    // If we get the semaphore, read the buffer to get a character. 
     {
-        while (SerialConsoleReadCharacter((uint8_t *) character) == -1)
-        {
-            vTaskDelay(pdMS_TO_TICKS(1));
-        }
+        SerialConsoleReadCharacter((uint8_t *) character);
+        // xSemaphoreGive(xReadOutSemaphore);
     }
 }
 
@@ -270,7 +272,8 @@ BaseType_t CLI_ResetDevice(int8_t *pcWriteBuffer, size_t xWriteBufferLen, const 
 // Print the version of the software. 
 BaseType_t CLI_PrintVersion(int8_t *pcWriteBuffer, size_t xWriteBufferLen, const int8_t *pcCommandString)
 {
-    snprintf(pcWriteBuffer, xWriteBufferLen, "0.0.1");
+    sprintf(bufCli, "%s\r\n", SOFTWARE_VERSION);
+    snprintf(pcWriteBuffer, xWriteBufferLen, bufCli);
     return pdFALSE;
 }
 
