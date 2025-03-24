@@ -87,7 +87,7 @@ void InitializeSerialConsole(void)
 
 	// Add any other calls you need to do to initialize your Serial Console
 	// Create binary read semaphore
-	xReadSemaphore = xSemaphoreCreateCounting(RX_BUFFER_SIZE, 0);;
+	xReadSemaphore = xSemaphoreCreateCounting(RX_BUFFER_SIZE, 0);
 }
 
 /**
