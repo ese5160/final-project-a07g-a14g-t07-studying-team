@@ -149,7 +149,7 @@ void setLogLevel(enum eDebugLogLevels debugLevel)
 /**
  * @brief Logs a message at the specified debug level.
  * @param   	level  Determines the log levels of the message to output. If the level is smaller than 
- * 					   the current “logLevel” it is not printed.
+ * 					   the current "logLevel" it is not printed.
  * @param   	format Pointer to a array of characters to be printed.
  * @param   	...    A list of arguments to be printed. 
  */
