@@ -71,41 +71,83 @@
 ## 2 Understanding the Starter Code
 
 1. The `InitializeSerialConsole()` provides the initialization function of the Serial Port, which initialize the UART hardware, registers, interrupts, and callback functions for USART events. The `cbufRx` defines the buffer size of the receive buffer, and the `cbufTx` defines the buffer size of the transmit buffer. These two buffers are of type circular buffer structures named cbuf_handle_t in SerialConsole.c, which was further defined in the circular_buffer.h as circular_buf_t. 
- ![alt text](image-1.png)
-The structure of circular_buf_ is further defined in circular_buffer.c. 
-![alt text](image.png)
+ 
+ ![alt text](07PT2/image-1.png)
 
-2. ![alt text](image-2.png)
-   ![alt text](image-3.png)
+ The structure of circular_buf_ is further defined in circular_buffer.c. 
+
+ ![alt text](07PT2/image.png)
+
+2. 
+   
+   ![alt text](07PT2/image-2.png)
+
+   ![alt text](07PT2/image-3.png)
+
    `cbufRX` and `cbufTx` are initialized by the function `circular_buf_init()` inside InitializeSerialConsole in SerialConsole.c, which is further defined in circular_buffer.c specifies the address to the buffer and the size of the buffer. The library is circular_buffer.c. 
 
-3. ![alt text](image-4.png)
-   ![alt text](image-5.png)
+3. 
+   
+   ![alt text](07PT2/image-4.png)
+
+   ![alt text](07PT2/image-5.png)
+   
    The Rx and Tx characters are being stored at `rxCharacterBuffer` and `txCharacterBuffer`, where each one has the size of `RX_BUFFER_SIZE` and `TX_BUFFER_SIZE` which is 512 bytes. 
    
-4. ![alt text](image-8.png)
-   The UART sent interrupt is called in usart_get_job_status inside SerialConsoleWriteString in SerialConsole.c when checking the current status of the usart. If ready(the SERCOM TX is free), proceeding to send data. If not ready, interrupt will be introduced until ready.
-   ![alt text](image-11.png)
-   ![alt text](image-10.png)
-   To further explain, the usart_write_job fuction is defined in usart_interrupt.c. Inside usart_wirite_job（）, the usart_write_buffer perform the send data task.  Inside the usart_write_buffer, usart_hw->INTENSET.reg = SERCOM_USART_INTFLAG_DRE is called to enable the Data Register Empty (DRE) interrupt.  It sets up the USART hardware to trigger an interrupt when it is ready to accept more data.
-   ![alt text](image-12.png)
-  The UART received interrupt is called in usart_read_callback inside SerialConsoleWriteString in SerialConsole.c when checking the current status of the usart. If ready(the SERCOM TX is free), proceeding to send data. If not ready, interrupt will be introduced until ready.
+4. 
+  
+   
+   ![alt text](07PT2/image-13.png)
 
-5. ![alt text](image-6.png)
+   ![alt text](07PT2/image-14.png)
+   The USART character sending interrupt process utilizes the usart_write_callback function, triggered by the SERCOM4_IRQn interrupt vector when a byte finishes transmitting, to fetch and send the next byte from the TX buffer via usart_write_buffer_job, enabling non-blocking, interrupt-driven communication managed by the ASF library.
+
+   ![alt text](07PT2/image-8.png)
+   
+   The UART sent interrupt is called in usart_get_job_status inside SerialConsoleWriteString in SerialConsole.c when checking the current status of the usart. If ready(the SERCOM TX is free), proceeding to send data. If not ready, interrupt will be introduced until ready.
+
+
+   ![alt text](07PT2/image-11.png)
+
+   ![alt text](07PT2/image-10.png)
+
+   To further explain, the usart_write_job fuction is defined in usart_interrupt.c. Inside usart_wirite_job（）, the usart_write_buffer perform the send data task.  Inside the usart_write_buffer, usart_hw->INTENSET.reg = SERCOM_USART_INTFLAG_DRE is called to enable the Data Register Empty (DRE) interrupt.  It sets up the USART hardware to trigger an interrupt when it is ready to accept more data.
+
+   ![alt text](07PT2/image-12.png)
+
+   
+  The ASF library handles low-level interrupts internally, utilizing the usart_read_callback as user-defined logic triggered by the SERCOM4_IRQn interrupt, with key functions like usart_read_buffer_job and usart_register_callback managing UART data reception. 
+
+  The UART received interrupt is called in usart_read_callback() in SerialConsole.c when data arrives. If the data recieved in latestRx is successfully added to circular buffer cbufRx,  a semaphore is released via xSemaphoreGiveFromISR to notify the system that the data is ready for processing. Function usart_read_buffer_job will continue the data handling stopped by xSemaphoreGiveFromISR. The port_Yield_From_ISR will stop the data transmission ans switch task when higher proity task is detected. 
+  
+
+5. 
+   
+   ![alt text](07PT2/image-6.png)
     a. The function `usart_read_callback` is called when a character is received. <br>
-    ![alt text](image-7.png)
+
+    ![alt text](07PT2/image-7.png)
     b. The function `usart_write_callback` is called when a character has been sent. 
-6. The read callback attempts to put the received data that stores in `latestRx` to the buffer `cbufRx` using function `circular_buf_put2`. If `cbufRx` is not full, the insertion success, and it restarts the read job to get the next character. The write callback checks if any data could be retrieved from `cbufTx` using function `circular_buf_get`, and if success, then put the retrieved data into `latestTx` and restart the write job. 
-7. 1. User types a character. TODO
-   1. The character is transmitted through USART and get into the register `latestRx`. 
-   2. An interrupt is called, triggering the callback function `usart_read_callback()`. 
-   3. The callback function checks if the buffer `cbufRx` is full or not. 
-   4. If `cbufRx` is not full, the data stored in the register `latestRx` are put into `cbufRx`, and restart the read job. 
-8. 1. A string is added to the buffer `cbufTx`. TODO
-   1. An interrupt is called, triggering the callback function `usart_write_callback()`. 
-   2. The callback function checks if any data could be read from `cbufTx`. 
-   3. If there are data in `cbufTx`, put the data in the register `latestTx`, and then restart the write job for potential future characters. 
-   4. The data in `latestTx` is transmitted through USART. 
+
+6.
+
+ The read callback attempts to put the received data that stores in `latestRx` to the buffer `cbufRx` using function `circular_buf_put2`. If `cbufRx` is not full, the insertion success, and it restarts the read job to get the next character. The write callback checks if any data could be retrieved from `cbufTx` using function `circular_buf_get`, and if success, then put the retrieved data into `latestTx` and restart the write job. 
+   
+7.
+
+   1. User types a character. TODO
+   2. The character is transmitted through USART and get into the register `latestRx`. 
+   3. An interrupt is called, triggering the callback function `usart_read_callback()`. 
+   4. The callback function checks if the buffer `cbufRx` is full or not. 
+   5. If `cbufRx` is not full, the data stored in the register `latestRx` are put into `cbufRx`, and restart the read job. 
+   
+8.
+   1. A string is added to the buffer `cbufTx`. TODO
+   2. An interrupt is called, triggering the callback function `usart_write_callback()`. 
+   3. The callback function checks if any data could be read from `cbufTx`. 
+   4. If there are data in `cbufTx`, put the data in the register `latestTx`, and then restart the write job for potential future characters. 
+   5. The data in `latestTx` is transmitted through USART. 
+   
 9.  It starts the thread named "CLI_TASK", and checks how many heap is free before and after the creation of this thread. Only 1 new thread is started. 
 
 ## 3 Debug Logger Module
