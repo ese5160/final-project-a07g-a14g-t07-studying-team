@@ -51,10 +51,10 @@ static const CLI_Command_Definition_t xVersion =
     0
 };
 
-static const CLI_Command_Definition_t xTick = 
+static const CLI_Command_Definition_t xTicks = 
 {
-    "tick", 
-    "tick: Print out the current tick of the software\r\n", 
+    "ticks", 
+    "ticks: Print out the current ticks of the software\r\n", 
     (const pdCOMMAND_LINE_CALLBACK)CLI_PrintTicks, 
     0
 };
@@ -78,7 +78,7 @@ void vCommandConsoleTask(void *pvParameters)
     FreeRTOS_CLIRegisterCommand(&xClearScreen);
     FreeRTOS_CLIRegisterCommand(&xResetCommand);
     FreeRTOS_CLIRegisterCommand(&xVersion);
-    FreeRTOS_CLIRegisterCommand(&xTick);
+    FreeRTOS_CLIRegisterCommand(&xTicks);
 
     uint8_t cRxedChar[2], cInputIndex = 0;
     BaseType_t xMoreDataToFollow;

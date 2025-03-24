@@ -84,8 +84,23 @@
 
 1. Should be attached to SERCOM4. 
 2. Should attach to PB10 and PB11. 
-3. 
+3. We need to set the analyzer to Async Serial with a baud rate of 115200 and follow the requirements (8N1). 
+
+Hardware connection:
+
+![alt text](images/A07G-P4.2.jpg)
+
+Screenshot: 
+![alt text](images/A07G_P4.jpg)
+
+File: Located at ./A07G_files/P4_capture.sal
 
 ## 5 Complete the CLI
 
+Please check the source code. 
+
 ## 6 Add CLI commands
+
+<video controls src="../videos/A07G/P6.mp4" title="Title"></video>
+
+Or you can click [THIS LINK](https://drive.google.com/file/d/1P5SFXJVd2SSnBR0WX3q4TfmQKcDXnWay/view?usp=sharing). 
