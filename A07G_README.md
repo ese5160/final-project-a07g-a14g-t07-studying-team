@@ -9,6 +9,13 @@
 
 ## 1 Software Architecture
 
+2.
+
+![alt text](07PT1/07-sys.png)
+
+3.
+
+![alt text](07PT1/07-flow.png)
 
 
 ## 2 Understanding the Starter Code
