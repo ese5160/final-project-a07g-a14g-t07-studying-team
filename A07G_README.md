@@ -70,9 +70,7 @@
 
   The UART received interrupt is called in usart_read_callback() in SerialConsole.c when data arrives. If the data recieved in latestRx is successfully added to circular buffer cbufRx,  a semaphore is released via xSemaphoreGiveFromISR to notify the system that the data is ready for processing. Function usart_read_buffer_job will continue the data handling stopped by xSemaphoreGiveFromISR. The port_Yield_From_ISR will stop the data transmission ans switch task when higher proity task is detected. 
   
- 
 
-   
 
 
 5. 
@@ -88,6 +86,7 @@
  The read callback attempts to put the received data that stores in `latestRx` to the buffer `cbufRx` using function `circular_buf_put2`. If `cbufRx` is not full, the insertion success, and it restarts the read job to get the next character. The write callback checks if any data could be retrieved from `cbufTx` using function `circular_buf_get`, and if success, then put the retrieved data into `latestTx` and restart the write job. 
    
 7.
+
    1. User types a character. TODO
    2. The character is transmitted through USART and get into the register `latestRx`. 
    3. An interrupt is called, triggering the callback function `usart_read_callback()`. 
