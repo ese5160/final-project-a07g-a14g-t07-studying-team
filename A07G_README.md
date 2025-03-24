@@ -39,7 +39,7 @@
 3. 
    
    ![alt text](image-4.png)
-   
+
    ![alt text](image-5.png)
    
    The Rx and Tx characters are being stored at `rxCharacterBuffer` and `txCharacterBuffer`, where each one has the size of `RX_BUFFER_SIZE` and `TX_BUFFER_SIZE` which is 512 bytes. 
@@ -75,7 +75,7 @@
    
 
 
-1. 
+5. 
    
    ![alt text](image-6.png)
     a. The function `usart_read_callback` is called when a character is received. <br>
