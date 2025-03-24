@@ -13,12 +13,55 @@
 
 ## 2 Understanding the Starter Code
 
-1. The `InitializeSerialConsole()` provides the initialization function of the Serial Port, which initialize the UART hardware, registers, interrupts, and callback functions for USART events. The `cbufRx` defines the buffer size of the receive buffer, and the `cbufTx` defines the buffer size of the transmit buffer. These two buffers are of type circular buffer structures. 
-2. `cbufRX` and `cbufTx` are initialized by the function `circular_buf_init()` which specifies the address to the buffer and the size of the buffer. The library is circular_buffer.c. 
-3. The Rx and Tx characters are being stored at `rxCharacterBuffer` and `txCharacterBuffer`, where each one has the size of `RX_BUFFER_SIZE` and `TX_BUFFER_SIZE` which is 512 bytes. 
-4. The interrupts are defined inside the ASF folder. 
+1. The `InitializeSerialConsole()` provides the initialization function of the Serial Port, which initialize the UART hardware, registers, interrupts, and callback functions for USART events. The `cbufRx` defines the buffer size of the receive buffer, and the `cbufTx` defines the buffer size of the transmit buffer. These two buffers are of type circular buffer structures named cbuf_handle_t in SerialConsole.c, which was further defined in the circular_buffer.h as circular_buf_t. 
+ 
+ ![alt text](image-1.png)
+
+ The structure of circular_buf_ is further defined in circular_buffer.c. 
+
+ ![alt text](image.png)
+
+2. 
+   
+   ![alt text](image-2.png)
+
+   ![alt text](image-3.png)
+
+   `cbufRX` and `cbufTx` are initialized by the function `circular_buf_init()` inside InitializeSerialConsole in SerialConsole.c, which is further defined in circular_buffer.c specifies the address to the buffer and the size of the buffer. The library is circular_buffer.c. 
+
+3. 
+   
+   ![alt text](image-4.png)
+   ![alt text](image-5.png)
+   
+   The Rx and Tx characters are being stored at `rxCharacterBuffer` and `txCharacterBuffer`, where each one has the size of `RX_BUFFER_SIZE` and `TX_BUFFER_SIZE` which is 512 bytes. 
+   
+4. 
+  
+   ![alt text](image-8.png)
+
+   The UART sent interrupt is called in usart_get_job_status inside SerialConsoleWriteString in SerialConsole.c when checking the current status of the usart. If ready(the SERCOM TX is free), proceeding to send data. If not ready, interrupt will be introduced until ready.
+
+
+   ![alt text](image-11.png)
+   ![alt text](image-10.png)
+
+   To further explain, the usart_write_job fuction is defined in usart_interrupt.c. Inside usart_wirite_job（）, the usart_write_buffer perform the send data task.  Inside the usart_write_buffer, usart_hw->INTENSET.reg = SERCOM_USART_INTFLAG_DRE is called to enable the Data Register Empty (DRE) interrupt.  It sets up the USART hardware to trigger an interrupt when it is ready to accept more data.
+
+   ![alt text](image-12.png)
+  The UART received interrupt is called in usart_read_callback inside SerialConsoleWriteString in SerialConsole.c when checking the current status of the usart. If ready(the SERCOM TX is free), proceeding to send data. If not ready, interrupt will be introduced until ready.
+
+   
+
+ 
+
+   The interrupts are defined inside the ASF folder. 
 5. 
+   
+   ![alt text](image-6.png)
     a. The function `usart_read_callback` is called when a character is received. <br>
+
+    ![alt text](image-7.png)
     b. The function `usart_write_callback` is called when a character has been sent. 
 6. The read callback attempts to put the received data that stores in `latestRx` to the buffer `cbufRx` using function `circular_buf_put2`. If `cbufRx` is not full, the insertion success, and it restarts the read job to get the next character. The write callback checks if any data could be retrieved from `cbufTx` using function `circular_buf_get`, and if success, then put the retrieved data into `latestTx` and restart the write job. 
 7. 1. User types a character. TODO
