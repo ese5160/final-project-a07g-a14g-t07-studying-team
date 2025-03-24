@@ -43,6 +43,8 @@ cbuf_handle_t cbufTx; ///< Circular buffer handler for transmitting characters
 char latestRx; ///< Holds the latest character received
 char latestTx; ///< Holds the latest character to be transmitted
 
+SemaphoreHandle_t xReadSemaphore; ///< Checks if read is available
+
 /******************************************************************************
  * Callback Declarations
  ******************************************************************************/
@@ -84,6 +86,8 @@ void InitializeSerialConsole(void)
     usart_read_buffer_job(&usart_instance, (uint8_t *)&latestRx, 1); // Kicks off constant reading of characters
 
 	// Add any other calls you need to do to initialize your Serial Console
+	// Create binary read semaphore
+	xReadSemaphore = xSemaphoreCreateCounting(RX_BUFFER_SIZE, 0);;
 }
 
 /**
@@ -229,15 +233,18 @@ static void configure_usart_callbacks(void)
  * @fn			void usart_read_callback(struct usart_module *const usart_module)
  * @brief		Callback called when the system finishes receives all the bytes requested from a UART read job
 		 Students to fill out. Please note that the code here is dummy code. It is only used to show you how some functions work.
- * @note
+ * @note 
  *****************************************************************************/
 void usart_read_callback(struct usart_module *const usart_module)
 {
+	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 	// ToDo: Complete this function 
 	if (circular_buf_put2(cbufRx, (uint8_t)latestRx) != -1)
 	{
+		xSemaphoreGiveFromISR(xReadSemaphore, &xHigherPriorityTaskWoken);
 		usart_read_buffer_job(&usart_instance, (uint8_t *)&latestRx, 1);
 	}
+    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
 /**************************************************************************/ 

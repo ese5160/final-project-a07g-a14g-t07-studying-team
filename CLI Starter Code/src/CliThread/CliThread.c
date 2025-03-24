@@ -10,6 +10,7 @@
  * Includes
  ******************************************************************************/
 #include "CliThread.h"
+#include "SerialConsole.h"
 
 /******************************************************************************
  * Defines
@@ -20,6 +21,8 @@
  ******************************************************************************/
 static int8_t *const pcWelcomeMessage =
     "FreeRTOS CLI.\r\nType Help to view a list of registered commands.\r\n";
+
+extern SemaphoreHandle_t xReadSemaphore;
 
 // Clear screen command
 const CLI_Command_Definition_t xClearScreen =
@@ -125,7 +128,6 @@ void vCommandConsoleTask(void *pvParameters)
             /* The if() clause performs the processing after a newline character
     is received.  This else clause performs the processing if any other
     character is received. */
-
             if (true == isEscapeCode)
             {
 
@@ -217,7 +219,13 @@ void vCommandConsoleTask(void *pvParameters)
 static void FreeRTOS_read(char *character)
 {
     // ToDo: Complete this function
-    vTaskSuspend(NULL); // We suspend ourselves. Please remove this when doing your code
+    if (xSemaphoreTake(xReadSemaphore, portMAX_DELAY) == pdTRUE)
+    {
+        while (SerialConsoleReadCharacter((uint8_t *) character) == -1)
+        {
+            vTaskDelay(pdMS_TO_TICKS(1));
+        }
+    }
 }
 
 /******************************************************************************
