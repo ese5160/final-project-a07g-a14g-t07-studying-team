@@ -6,9 +6,7 @@
 * GitHub Repository URL: https://github.com/ese5160/final-project-a07g-a14g-t07-studying-team
 * Description of test hardware: SamW25 Dev Board
 
-PT1
 
-Q1
 ## 1 Software Architecture
 ### Hardware Requirements Specification (HRS)
    1. Overview
