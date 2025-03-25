@@ -6,7 +6,9 @@
 * GitHub Repository URL: https://github.com/ese5160/final-project-a07g-a14g-t07-studying-team
 * Description of test hardware: SamW25 Dev Board
 
+PT1
 
+Q1
 ## 1 Software Architecture
 ### Hardware Requirements Specification (HRS)
    1. Overview
@@ -64,13 +66,14 @@
       * SRS 05: The LCD display shall render a dynamic user interface that reflects real-time system state. Updates to UI elements (e.g., text, icons, menus) must be completed within 200 ms of a user action.
 
 
-2.
+Q2
 
 ![alt text](07PT1/07-syst.png)
 
   
 
-3.![alt text](07PT1/07-flow.png)
+Q3.
+![alt text](07PT1/07-flow.png)
 
 
 ## 2 Understanding the Starter Code
