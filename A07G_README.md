@@ -63,7 +63,9 @@
          * Reconnect automatically within 5 seconds after a connection drop.
       * SRS 05: The LCD display shall render a dynamic user interface that reflects real-time system state. Updates to UI elements (e.g., text, icons, menus) must be completed within 200 ms of a user action.
 
+
 2.
+
 ![alt text](07PT1/07-syst.png)
 
   
