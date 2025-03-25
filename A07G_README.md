@@ -176,7 +176,7 @@ Hardware connection:
 ![alt text](images/A07G-P4.2.jpg)
 
 Screenshot: 
-![alt text](images/A07G_P4.jpg)
+![alt text](images/A07G_P4.1.jpg)
 
 File: Located at ./A07G_files/P4_capture.sal
 
@@ -186,6 +186,8 @@ Please check the source code.
 
 ## 6 Add CLI commands
 
-<video controls src="../videos/A07G/P6.mp4" title="Title"></video>
+<video controls src="videos/A07G/P6.mp4" title="Title"></video>
+
+Video is located at ./videos/A07G/P6.mp4. 
 
 Or you can click [THIS LINK](https://drive.google.com/file/d/1P5SFXJVd2SSnBR0WX3q4TfmQKcDXnWay/view?usp=sharing). 
