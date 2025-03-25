@@ -132,7 +132,7 @@ Q5.
    ![alt text](07PT2/image-6.png)
     a. The function `usart_read_callback` is called when a character is received. <br>
 
-    ![alt text](07PT2/image-7.png)
+   ![alt text](07PT2/image-7.png)
     b. The function `usart_write_callback` is called when a character has been sent. 
 
 Q6.
