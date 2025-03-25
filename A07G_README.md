@@ -65,6 +65,8 @@
 
 2.![alt text](07PT1/07-sys.png)
 
+ This is the block diagram. 
+
 3.![alt text](07PT1/07-flow.png)
 
 
