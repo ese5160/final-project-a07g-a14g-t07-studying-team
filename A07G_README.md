@@ -70,7 +70,7 @@
 
 ## 2 Understanding the Starter Code
 
-1. The `InitializeSerialConsole()` provides the initialization function of the Serial Port, which initialize the UART hardware, registers, interrupts, and callback functions for USART events. The `cbufRx` defines the buffer size of the receive buffer, and the `cbufTx` defines the buffer size of the transmit buffer. These two buffers are of type circular buffer structures named cbuf_handle_t in SerialConsole.c, which was further defined in the circular_buffer.h as circular_buf_t. 
+Q1. The `InitializeSerialConsole()` provides the initialization function of the Serial Port, which initialize the UART hardware, registers, interrupts, and callback functions for USART events. The `cbufRx` defines the buffer size of the receive buffer, and the `cbufTx` defines the buffer size of the transmit buffer. These two buffers are of type circular buffer structures named cbuf_handle_t in SerialConsole.c, which was further defined in the circular_buffer.h as circular_buf_t. 
  
  ![alt text](07PT2/image-1.png)
 
@@ -78,7 +78,7 @@
 
  ![alt text](07PT2/image.png)
 
-2. 
+Q2. 
    
    ![alt text](07PT2/image-2.png)
 
@@ -86,7 +86,7 @@
 
    `cbufRX` and `cbufTx` are initialized by the function `circular_buf_init()` inside InitializeSerialConsole in SerialConsole.c, which is further defined in circular_buffer.c specifies the address to the buffer and the size of the buffer. The library is circular_buffer.c. 
 
-3. 
+Q3. 
    
    ![alt text](07PT2/image-4.png)
 
@@ -94,7 +94,7 @@
    
    The Rx and Tx characters are being stored at `rxCharacterBuffer` and `txCharacterBuffer`, where each one has the size of `RX_BUFFER_SIZE` and `TX_BUFFER_SIZE` which is 512 bytes. 
    
-4. 
+Q4. 
   
    
    ![alt text](07PT2/image-13.png)
@@ -121,7 +121,7 @@
   The UART received interrupt is called in usart_read_callback() in SerialConsole.c when data arrives. If the data recieved in latestRx is successfully added to circular buffer cbufRx,  a semaphore is released via xSemaphoreGiveFromISR to notify the system that the data is ready for processing. Function usart_read_buffer_job will continue the data handling stopped by xSemaphoreGiveFromISR. The port_Yield_From_ISR will stop the data transmission ans switch task when higher proity task is detected. 
   
 
-5. 
+Q5. 
    
    ![alt text](07PT2/image-6.png)
     a. The function `usart_read_callback` is called when a character is received. <br>
@@ -129,26 +129,31 @@
     ![alt text](07PT2/image-7.png)
     b. The function `usart_write_callback` is called when a character has been sent. 
 
-6.
+Q6.
 
  The read callback attempts to put the received data that stores in `latestRx` to the buffer `cbufRx` using function `circular_buf_put2`. If `cbufRx` is not full, the insertion success, and it restarts the read job to get the next character. The write callback checks if any data could be retrieved from `cbufTx` using function `circular_buf_get`, and if success, then put the retrieved data into `latestTx` and restart the write job. 
    
-7.
+Q7.
+   ![alt text](07PT2/pt2q7.png)
 
-   1. User types a character. TODO
+   1. User types a character.
    2. The character is transmitted through USART and get into the register `latestRx`. 
    3. An interrupt is called, triggering the callback function `usart_read_callback()`. 
    4. The callback function checks if the buffer `cbufRx` is full or not. 
    5. If `cbufRx` is not full, the data stored in the register `latestRx` are put into `cbufRx`, and restart the read job. 
    
-8.
-   1. A string is added to the buffer `cbufTx`. TODO
+Q8.
+   ![alt text](07PT2/pt2q8.png)
+
+   1. A string is added to the buffer `cbufTx`.
    2. An interrupt is called, triggering the callback function `usart_write_callback()`. 
    3. The callback function checks if any data could be read from `cbufTx`. 
    4. If there are data in `cbufTx`, put the data in the register `latestTx`, and then restart the write job for potential future characters. 
    5. The data in `latestTx` is transmitted through USART. 
    
-9.  It starts the thread named "CLI_TASK", and checks how many heap is free before and after the creation of this thread. Only 1 new thread is started. 
+Q9. 
+
+ It starts the thread named "CLI_TASK", and checks how many heap is free before and after the creation of this thread. Only 1 new thread is started. 
 
 ## 3 Debug Logger Module
 
@@ -165,7 +170,7 @@ Hardware connection:
 ![alt text](images/A07G-P4.2.jpg)
 
 Screenshot: 
-![alt text](images/A07G_P4.1.jpg)
+![alt text](images/A07G_P4.jpg)
 
 File: Located at ./A07G_files/P4_capture.sal
 
